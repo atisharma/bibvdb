@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-  "setuptools>=64", "hy"
+  "setuptools>=72", "hy"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -20,11 +20,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
     "hyjinx",
     "hy-bibsearch>=1.0.2",
+    "jaro-winkler",
     "fvdb",
     "tabulated"
 ]

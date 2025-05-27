@@ -97,10 +97,9 @@ vector database.
   (let [v (faiss path)
         results (similar v query :top top)
         keys ["score" "source" "length" "title" "authors" "year"]]
-    (if json
-      (click.echo
-        (dumps results))
-      (click.echo
+    (click.echo
+      (if json
+        (dumps results)
         (tabulate (lfor d results
                     (keyfilter (fn [k] (in k keys)) d))
                   :headers "keys"
@@ -126,3 +125,32 @@ vector database.
         (print)))))
   
 (cli.add-command show)
+
+
+(defn [(click.command)
+       (click.option "-p" "--path" :default default-path :help "Specify a bibvdb path.")
+       (click.option "-r" "--top" :default 10 :type int :help "Return just top n results.")
+       (click.option "-f" "--field" :default "title" :help "Field to match against (source, title, authors)")
+       (click.option "-j" "--json" :is-flag True :default False :help "Return results as a json string")
+       (click.argument "query")]
+  match [path query * top field json]
+  (import fvdb.db [faiss])
+  (import jaro [jaro-winkler-metric])
+  (let [v (faiss path)
+        keys ["source" "title" "authors" "year"]
+        results (lfor r (:records v)
+                  {"score" (jaro-winkler-metric query (get r field))
+                   #** (keyfilter (fn [k] (in k keys)) r)})
+        sorted-results (cut (sorted results
+                                    :key (fn [r] (:score r))
+                                    :reverse True)
+                            0 top)]
+    (click.echo
+      (if json
+        (dumps sorted-results)
+        (tabulate sorted-results
+                  :headers "keys"
+                  :maxcolwidths [8 20 None 30 30 5]
+                  :floatfmt ".2f")))))
+  
+(cli.add-command match)
