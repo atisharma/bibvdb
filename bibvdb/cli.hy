@@ -96,14 +96,14 @@ vector database.
   (import fvdb.db [faiss similar])
   (let [v (faiss path)
         results (similar v query :top top)
-        keys ["score" "source" "length" "title" "authors" "year"]]
+        keys ["score" "source" "length" "title" "container" "authors" "year"]]
     (click.echo
       (if json
         (dumps results)
         (tabulate (lfor d results
                     (keyfilter (fn [k] (in k keys)) d))
                   :headers "keys"
-                  :maxcolwidths [8 20 None 30 30 5]
+                  :maxcolwidths [8 8 20 None None 30 30 5]
                   :floatfmt ".2f")))))
   
 (cli.add-command similar)
@@ -137,9 +137,10 @@ vector database.
   (import fvdb.db [faiss])
   (import jaro [jaro-winkler-metric])
   (let [v (faiss path)
-        keys ["source" "title" "authors" "year"]
+        keys ["source" "title" "authors" "container" "year"]
+        search-field (hy.models.Keyword field)
         results (lfor r (:records v)
-                  {"score" (jaro-winkler-metric query (get r field))
+                  {"score" (jaro-winkler-metric query (or (search-field r None) (* "_" 1000)))
                    #** (keyfilter (fn [k] (in k keys)) r)})
         sorted-results (cut (sorted results
                                     :key (fn [r] (:score r))
@@ -150,7 +151,7 @@ vector database.
         (dumps sorted-results)
         (tabulate sorted-results
                   :headers "keys"
-                  :maxcolwidths [8 20 None 30 30 5]
+                  :maxcolwidths [8 20 None None 30 30 5]
                   :floatfmt ".2f")))))
   
 (cli.add-command match)

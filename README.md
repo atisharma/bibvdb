@@ -49,3 +49,4 @@ Configuration is essentially the same as `fvdb`, but the config file is located 
 
 Add the ability to crawl via the references retrieved within a DOI record (one layer deep).
 
+Format the table column widths to the terminal width.
