@@ -10,7 +10,7 @@ import hy
 import bibvdb.config
 
 # set the package version
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __version_info__ = __version__.split(".")
 
 
