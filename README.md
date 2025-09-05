@@ -50,3 +50,5 @@ Configuration is essentially the same as `fvdb`, but the config file is located 
 Add the ability to crawl via the references retrieved within a DOI record (one layer deep).
 
 Format the table column widths to the terminal width.
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/atisharma/bibvdb)
